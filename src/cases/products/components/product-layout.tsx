@@ -16,9 +16,8 @@ export default function ProductLayout() {
 
   const [selectedCategory, setSelectedCategory] = useState<string>("All"); 
   const [searchTerm, setSearchTerm] = useState("");
-
   if (isLoading) return <p>Carregando produtos...</p>;
-
+  
   const filteredProducts = products.filter((product) => {
     const matchesCategory = selectedCategory === "All" ? true : String(product.category?.id) === selectedCategory;
 

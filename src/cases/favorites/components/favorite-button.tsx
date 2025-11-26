@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Crown } from "lucide-react";
 
 interface Props {
   productId: string;
@@ -12,7 +12,7 @@ export function FavoriteButton({ productId, favorites, toggle }: Props) {
     return (
       <button onClick={() => toggle(productId)}
               className="hover:opacity-80 transition cursor-pointer">
-        <Heart className={`w-6 h-6 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"}`}/>
+        <Crown className={`w-6 h-6 ${isFavorite ? "fill-yellow-500 text-yellow-500" : "text-gray-400"}`}/>
       </button>
     );
 }

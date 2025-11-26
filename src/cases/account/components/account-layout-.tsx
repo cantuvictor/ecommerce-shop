@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useEffect, useState } from "react";
 
 export function AccountLayout() {
-    const { customer, isLoading: customersLoading } = useCurrentCustomer();
+  const { customer, isLoading: customersLoading } = useCurrentCustomer();
     const { data: cities = [], isLoading: citiesLoading } = useCities();
     const { data: states = [], isLoading: statesLoading } = useStates();
     const { mutate: updateCustomer, isPending } = useUpdateCustomer();
@@ -92,90 +92,104 @@ export function AccountLayout() {
         );
     }
 
-    return (
-        <div className="p-8">
-            <div className="flex flex-col">
-                <h1 className="text-2xl font-bold mb-8">
-                    Olá <span className="font-bold text-blue-600">{customer ? customer.name : "usuário"}</span>!
-                </h1>
+  return (
+    <div className="w-full p-6 space-y-10">
+      <header className="p-6 bg-white rounded-xl shadow-lg border border-gray-200 space-y-4">
+        <h1 className="text-4xl font-extrabold text-blue-800">
+          Olá, <span className="text-blue-600">{customer?.name}</span>!
+        </h1>
+      </header>
 
-                <div className="flex flex-col mb-8">
-                    <h2 className="text-xl font-semibold mb-8">Endereço</h2>
+      <section className="p-6 bg-white rounded-xl shadow-md border border-gray-200 space-y-6">
+        <h2 className="text-2xl font-bold text-blue-800 border-b pb-3">Endereço</h2>
 
-                    <form onSubmit={handleSubmit}
-                          className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                        <div className="col-span-1 flex flex-col gap-2">
-                            <Label htmlFor="address">Endereço</Label>
-                            <Input id="address" name="address" value={formData.address} onChange={handleChange} required />
-                        </div>
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-5 gap-6"
+        >
+          <div className="col-span-1 flex flex-col gap-2">
+            <Label htmlFor="address">Endereço</Label>
+            <Input
+              id="address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-                        <div className="col-span-1 flex flex-col gap-2">
-                            <Label htmlFor="zipcode">CEP</Label>
-                            <Input id="zipcode" name="zipcode" value={formData.zipcode} onChange={handleChange} required />
-                        </div>
+          <div className="col-span-1 flex flex-col gap-2">
+            <Label htmlFor="zipcode">CEP</Label>
+            <Input
+              id="zipcode"
+              name="zipcode"
+              value={formData.zipcode}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-                        <div className="col-span-1 flex flex-col gap-2 md:justify-self-center">
-                            <Label htmlFor="stateId">Estado</Label>
-                            <Select value={formData.stateId}
-                                    onValueChange={(value) =>
-                                        setFormData((prev) => ({
-                                            ...prev,
-                                            stateId: value,
-                                            cityId: "",
-                                        }))
-                                    }>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecione um estado..." />
-                                </SelectTrigger>
+          <div className="col-span-1 flex flex-col gap-2 md:justify-self-center">
+            <Label htmlFor="stateId">Estado</Label>
+            <Select
+              value={formData.stateId}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, stateId: value, cityId: "" }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione um estado..." />
+              </SelectTrigger>
+              <SelectContent>
+                {states.map((state) => (
+                  <SelectItem key={state.id} value={String(state.id)}>
+                    {state.name} ({state.acronym})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-                                <SelectContent>
-                                    {states.map((state) => (
-                                        <SelectItem key={state.id} value={String(state.id)}>
-                                            {state.name} ({state.acronym})
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
+          <div className="col-span-1 flex flex-col gap-2">
+            <Label htmlFor="cityId">Cidade</Label>
+            <Select
+              value={formData.cityId}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, cityId: value }))
+              }
+              disabled={!formData.stateId}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione uma cidade..." />
+              </SelectTrigger>
+              <SelectContent>
+                {filteredCities.length > 0 ? (
+                  filteredCities.map((city) => (
+                    <SelectItem key={city.id} value={String(city.id)}>
+                      {city.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="no-data" disabled>
+                    Nenhuma cidade disponível
+                  </SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
 
-                        <div className="col-span-1 flex flex-col gap-2">
-                            <Label htmlFor="cityId">Cidade</Label>
-                            <Select value={formData.cityId}
-                                    onValueChange={(value) => setFormData((prev) => ({ ...prev, cityId: value }))}
-                                    disabled={!formData.stateId}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecione uma cidade..." />
-                                </SelectTrigger>
+          <div className="flex self-end">
+            <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer" type="submit" disabled={isPending}>
+              {isPending ? "Salvando..." : "Salvar alterações"}
+            </Button>
+          </div>
+        </form>
+      </section>
 
-                                <SelectContent>
-                                    {filteredCities.length > 0 ? (
-                                        filteredCities.map((city) => (
-                                            <SelectItem key={city.id} value={String(city.id)}>
-                                                {city.name}
-                                            </SelectItem>
-                                        ))
-                                    ) : (
-                                        <SelectItem value="no-data" disabled>
-                                            Nenhuma cidade disponível
-                                        </SelectItem>
-                                    )}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="flex self-end">
-                            <Button className="cursor-pointer" type="submit" disabled={isPending}>
-                                {isPending ? "Salvando..." : "Salvar alterações"}
-                            </Button>
-                        </div>
-                    </form>
-                </div>
-
-                <div className="flex flex-col">
-                    <h2 className="text-xl font-semibold mb-8">Pedidos</h2>
-                    <OrderDataTable />
-                </div>
-            </div>
-        </div>
-    );
+      <section className="p-6 bg-white rounded-xl shadow-md border border-gray-200 space-y-6">
+        <h2 className="text-2xl font-bold text-blue-800 border-b pb-3">Pedidos</h2>
+        <OrderDataTable />
+      </section>
+    </div>
+  );
 }

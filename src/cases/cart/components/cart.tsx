@@ -6,6 +6,7 @@ import { useCurrentCustomer } from "@/cases/customers/hooks/use-customer";
 import { useCreateOrder } from "@/cases/orders/hooks/use-order";
 import { useCreateOrderItem } from "@/cases/orders/hooks/use-order-item";
 import { useState } from "react";
+import { Trash } from "lucide-react";
 
 export function Cart() {
   const { cart, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCart();
@@ -20,7 +21,7 @@ export function Cart() {
   const handleClearCart = async () => {
     clearCart();
     toast.info("Carrinho limpo com sucesso!");
-  }
+  };
 
   const handleFinishOrder = async () => {
     try {
@@ -55,102 +56,89 @@ export function Cart() {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Meu Carrinho</h1>
+    <div className="w-full">
+      <header className="mb-8 space-y-4 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
+        <h1 className="text-4xl font-extrabold text-blue-800 mb-2">Meu Carrinho</h1>
+        <p className="text-gray-600 text-sm border-t pt-3">Revise seus produtos antes de finalizar a compra.</p>
+      </header>
 
-      {
-        cart.length === 0 ? 
-            (
-                <p className="text-gray-500">Seu carrinho está vazio.</p>
-            ) 
-        : 
-            (
-                <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                        {
-                            cart.map((product) => (
-                                <Card key={product.id} 
-                                      className="flex flex-col justify-between h-full">
-                                    <CardHeader>
-                                        <h2 className="text-lg font-semibold">{product.name}</h2>
-                                    </CardHeader>
+      {cart.length === 0 ? (
+        <p className="text-gray-600 text-lg bg-white p-6 rounded-xl shadow-md border text-center">Seu carrinho está vazio.</p>
+      ) : (
+        <>
+          <div className="gap-6 flex flex-col mb-8">
+            {cart.map((product) => (
+              <Card key={product.id} className="flex flex-row justify-between h-full shadow-md border rounded-xl">
+                <CardHeader className="w-1/3">
+                  <h2 className="text-lg font-semibold text-blue-900">{product.name}</h2>
+                  {product.description ? (
+                    <p className="text-sm text-gray-600 mb-2 whitespace-pre-line wrap-break-words">{product.description}</p>
+                  ) : (
+                    <div className="h-10" />
+                  )}
 
-                                    <CardContent className="flex flex-col justify-between h-full">
-                                        {
-                                            product.description ? 
-                                                (<p className="text-sm text-gray-600 mb-2 whitespace-pre-line wrap-break-words">{product.description}</p>) 
-                                            : 
-                                                (<div className="h-full" />)
-                                        }
+                </CardHeader>
 
-                                        <div className="flex items-center justify-between mt-2">
-                                            <span className="font-bold text-green-600 text-lg">
-                                                R$ {Number(product.price).toFixed(2)}
-                                            </span>
-                                        </div>
+                <CardContent className="flex flex-col justify-between h-full w-1/3">
+                  
 
-                                        <div className="flex items-center justify-center gap-3 mt-4">
-                                            <Button variant="outline"
-                                                    size="sm"
-                                                    onClick={() => decreaseQuantity(product.id!)}
-                                                    disabled={product.quantity <= 1}>
-                                                –
-                                            </Button>
+                  <div className="flex items-center justify-center gap-3 mt-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => decreaseQuantity(product.id!)}
+                      disabled={product.quantity <= 1}
+                    >
+                      –
+                    </Button>
 
-                                            <span className="font-medium">{product.quantity}</span>
+                    <span className="font-medium">{product.quantity}</span>
 
-                                            <Button variant="outline"
-                                                    size="sm"
-                                                    onClick={() => increaseQuantity(product.id!)}>
-                                                +
-                                            </Button>
-                                        </div>
+                    <Button variant="outline" size="sm" onClick={() => increaseQuantity(product.id!)}>
+                      +
+                    </Button>
+                  </div>
 
-                                        <p className="mt-4 text-center text-gray-500 text-sm">
-                                            Subtotal:{" "}
-                                            <span className="font-semibold text-green-600">
-                                                R$ {(Number(product.price) * product.quantity).toFixed(2)}
-                                            </span>
-                                        </p>
-                                    </CardContent>
+                  <p className="mt-4 text-center text-gray-600 text-sm">
+                    Subtotal: <span className="font-semibold text-green-600">R$ {(Number(product.price) * product.quantity).toFixed(2)}</span>
+                  </p>
+                </CardContent>
 
-                                    <CardFooter className="mt-auto">
-                                        <Button variant="destructive"
-                                                className="w-full cursor-pointer"
-                                                onClick={() => {
-                                                removeFromCart(product.id!);
-                                                }}>
-                                            Remover
-                                        </Button>
-                                    </CardFooter>
-                                </Card>
-                            ))
-                        }
-                    </div>
+                <CardFooter className="w-1/3">
+                  <Button
+                    variant="destructive"
+                    className="w-10 h-10  cursor-pointer ml-auto"
+                    onClick={() => removeFromCart(product.id!)}
+                  >
+                    <Trash/>
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
 
-                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-4">
-                        <h2 className="text-xl font-semibold">
-                            Total: <span className="text-green-600">R$ {total.toFixed(2)}</span>
-                        </h2>
+          <div className="bg-white rounded-xl shadow-lg border p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <h2 className="text-xl font-semibold text-blue-900">
+              Total: <span className="text-green-600">R$ {total.toFixed(2)}</span>
+            </h2>
 
-                        <div className="flex gap-3">
-                            <Button variant="secondary"
-                                    className="cursor-pointer"
-                                    onClick={handleClearCart}
-                                    disabled={isProcessing}>
-                                Limpar carrinho
-                            </Button>
+            <div className="flex gap-3">
+              <Button
+                variant="secondary"
+                className="cursor-pointer"
+                onClick={handleClearCart}
+                disabled={isProcessing}
+              >
+                Limpar carrinho
+              </Button>
 
-                            <Button onClick={handleFinishOrder}
-                                    className="cursor-pointer"
-                                    disabled={isProcessing}>
-                                {isProcessing ? "Processando..." : "Finalizar compra"}
-                            </Button>
-                        </div>
-                    </div>
-                </>
-            )
-      }
+              <Button onClick={handleFinishOrder} className="cursor-pointer bg-blue-500 hover:bg-blue-600" disabled={isProcessing}>
+                {isProcessing ? "Processando..." : "Finalizar compra"}
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

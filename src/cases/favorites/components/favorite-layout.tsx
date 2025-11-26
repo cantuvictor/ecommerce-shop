@@ -3,35 +3,36 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { Search } from "lucide-react";
 import { useState } from "react";
 
-
 export function FavoriteLayout() {
-    const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-    return (
-        <div className="p-8">
-            <div className="flex flex-col gap-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-                    <h1 className="text-2xl font-bold">Favoritos</h1>
-                    
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                        <InputGroup className="max-w-96 w-full sm:w-80">
-                            <InputGroupInput placeholder="Pesquise por produto..."
-                                            value={searchTerm}
-                                            onChange={(e) => setSearchTerm(e.target.value)}/>
+  return (
+    <div className="w-full">
 
-                            <InputGroupAddon>
-                                <Search className="text-gray-500" />
-                            </InputGroupAddon>
-                        </InputGroup>
-                        
-                    </div>
-                </div>
+      <header className="mb-8 space-y-4 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
 
-                <div>
-                    <ProductDataTable searchTerm={searchTerm} />
-                </div>
+        <h1 className="text-4xl font-extrabold text-blue-800 mb-4">
+          Favoritos
+        </h1>
 
-            </div>
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4 pt-4 border-t border-gray-100">
+          <InputGroup className="w-full lg:flex-grow">
+            <InputGroupInput
+              placeholder="Pesquise por produto..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <InputGroupAddon>
+              <Search className="text-blue-800" />
+            </InputGroupAddon>
+          </InputGroup>
         </div>
-    );
+      </header>
+
+      <div className="bg-white rounded-xl p-4 shadow-md border border-gray-200">
+        <ProductDataTable searchTerm={searchTerm} />
+      </div>
+
+    </div>
+  );
 }
