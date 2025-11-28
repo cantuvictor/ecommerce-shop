@@ -203,7 +203,7 @@ export default function Register() {
             <CardFooter className="flex-col gap-2 mt-10">
                 <Button type="submit" 
                         disabled={createCustomer.isPending} 
-                        className="w-full cursor-pointer">
+                        className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700">
                     {createCustomer.isPending ? "Cadastrando..." : "Cadastrar"}
                 </Button>
 
